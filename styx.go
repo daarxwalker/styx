@@ -2,6 +2,8 @@ package styx
 
 import (
 	"bytes"
+	"fmt"
+	"io"
 )
 
 type Styx struct {
@@ -60,6 +62,14 @@ func (s *Styx) Bytes() []byte {
 
 func (s *Styx) String() string {
 	return s.createResult().String()
+}
+
+func (s *Styx) Write(writer io.Writer) error {
+	_, err := writer.Write(s.Bytes())
+	if err != nil {
+		return fmt.Errorf("failed to write styx styles: %w", err)
+	}
+	return nil
 }
 
 func (s *Styx) createResult() *bytes.Buffer {

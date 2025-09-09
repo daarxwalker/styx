@@ -18,7 +18,7 @@ func TestDisplay(t *testing.T) {
 			)
 			assert.Equal(
 				t,
-				fmt.Sprintf(`@media (min-width:%s) {.hover\:lg\:flex{&:hover {display:flex;}}}`, BaseBreakpoints[Lg]),
+				fmt.Sprintf(`@media (min-width:%s) {.hover\:lg\:flex{&:hover{display:flex;}}}`, BaseBreakpoints[Lg]),
 				instance.Style(),
 			)
 		},

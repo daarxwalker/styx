@@ -61,6 +61,13 @@ func (b *Builder) JustifyCenter(modifiers ...Modifier) *Builder {
 	return b
 }
 
+func (b *Builder) JustifyBetween(modifiers ...Modifier) *Builder {
+	className := "justify-between"
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "justify-content:space-between;", modifiers...)
+	return b
+}
+
 // Align items
 
 func (b *Builder) Items(value string, modifiers ...Modifier) *Builder {

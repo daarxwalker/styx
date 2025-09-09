@@ -3,13 +3,15 @@ package styx
 type Modifier string
 
 const (
-	Hover      Modifier = "hover"
-	Focus      Modifier = "focus"
-	Active     Modifier = "active"
-	FirstChild Modifier = "first-child"
-	LastChild  Modifier = "last-child"
-	Checked    Modifier = "checked"
-	Disabled   Modifier = "disabled"
+	Hover       Modifier = "hover"
+	Focus       Modifier = "focus"
+	Active      Modifier = "active"
+	FirstChild  Modifier = "first-child"
+	LastChild   Modifier = "last-child"
+	FirstOfType Modifier = "first-of-type"
+	LastOfType  Modifier = "last-of-type"
+	Checked     Modifier = "checked"
+	Disabled    Modifier = "disabled"
 )
 
 func Not(selector string) Modifier {
@@ -36,13 +38,15 @@ const (
 
 var (
 	Pseudoselectors = map[Modifier]struct{}{
-		Hover:      {},
-		Focus:      {},
-		Active:     {},
-		FirstChild: {},
-		LastChild:  {},
-		Checked:    {},
-		Disabled:   {},
+		Hover:       {},
+		Focus:       {},
+		Active:      {},
+		FirstChild:  {},
+		LastChild:   {},
+		FirstOfType: {},
+		LastOfType:  {},
+		Checked:     {},
+		Disabled:    {},
 	}
 	Pseudoelements = map[Modifier]struct{}{
 		Before:      {},

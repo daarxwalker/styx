@@ -18,6 +18,48 @@ func (b *Builder) Border(value string, modifiers ...Modifier) *Builder {
 	return b
 }
 
+func (b *Builder) BorderX(value string, modifiers ...Modifier) *Builder {
+	className := "border-x-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "border-inline-width:"+value+";", modifiers...)
+	return b
+}
+
+func (b *Builder) BorderY(value string, modifiers ...Modifier) *Builder {
+	className := "border-y-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "border-block-width:"+value+";", modifiers...)
+	return b
+}
+
+func (b *Builder) BorderTop(value string, modifiers ...Modifier) *Builder {
+	className := "border-t-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "border-top-width:"+value+";", modifiers...)
+	return b
+}
+
+func (b *Builder) BorderRight(value string, modifiers ...Modifier) *Builder {
+	className := "border-r-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "border-right-width:"+value+";", modifiers...)
+	return b
+}
+
+func (b *Builder) BorderBottom(value string, modifiers ...Modifier) *Builder {
+	className := "border-b-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "border-bottom-width:"+value+";", modifiers...)
+	return b
+}
+
+func (b *Builder) BorderLeft(value string, modifiers ...Modifier) *Builder {
+	className := "border-l-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "border-left-width:"+value+";", modifiers...)
+	return b
+}
+
 func (b *Builder) BorderColor(color Color, modifiers ...Modifier) *Builder {
 	className := "border-" + string(color)
 	b.createClass(className, modifiers...)

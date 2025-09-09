@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+
+	_ "github.com/goforj/godump"
 )
 
 type Styx struct {
@@ -35,7 +37,8 @@ func (s *Styx) Build(selector ...string) *Builder {
 		customSelector:    customSelector,
 		hasCustomSelector: len(customSelector) > 0,
 		classes:           make([]string, 0),
-		styles:            &s.styles,
+		globalStyles:      &s.styles,
+		styles:            make([]*bytes.Buffer, 0),
 		seenClasses:       make(map[string]struct{}),
 		seenStyles:        s.seenStyles,
 	}

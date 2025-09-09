@@ -27,3 +27,10 @@ func (b *Builder) WillChange(value string, modifiers ...Modifier) *Builder {
 	b.createStyle(className, "will-change:"+value+";", modifiers...)
 	return b
 }
+
+func (b *Builder) Appearance(value string, modifiers ...Modifier) *Builder {
+	className := "appearance-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "appearance:"+value+";", modifiers...)
+	return b
+}

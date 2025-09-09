@@ -8,7 +8,8 @@ import (
 type Builder struct {
 	cfg                 *Config
 	classes             []string
-	styles              *[]*bytes.Buffer
+	globalStyles        *[]*bytes.Buffer
+	styles              []*bytes.Buffer
 	seenClasses         map[string]struct{}
 	seenStyles          map[uint64]struct{}
 	customSelector      string
@@ -47,7 +48,8 @@ func (b *Builder) DefineVar(name, value string) *Builder {
 	tmpStyle.WriteString(":")
 	tmpStyle.WriteString(value)
 	tmpStyle.WriteString(";")
-	*b.styles = append(*b.styles, tmpStyle)
+	*b.globalStyles = append(*b.globalStyles, tmpStyle)
+	b.styles = append(b.styles, tmpStyle)
 	return b
 }
 
@@ -55,7 +57,7 @@ func (b *Builder) Join(other *Builder) *Builder {
 	for _, class := range other.classes {
 		b.rememberClass(class)
 	}
-	for _, style := range *other.styles {
+	for _, style := range other.styles {
 		b.rememberStyle(style)
 	}
 	return b
@@ -82,7 +84,7 @@ func (b *Builder) Style() string {
 	if b.hasCustomSelector && !b.customSelectorClose {
 		b.closeCustomSelector()
 	}
-	for _, style := range *b.styles {
+	for _, style := range b.styles {
 		result.WriteString(style.String())
 	}
 	return result.String()
@@ -135,12 +137,12 @@ func (b *Builder) createStyle(class, style string, modifiers ...Modifier) {
 	if hasPseudoselector {
 		tmpStyle.WriteString("&:")
 		tmpStyle.WriteString(string(pseudoselector))
-		tmpStyle.WriteString(" {")
+		tmpStyle.WriteString("{")
 	}
 	if hasPseudoelement {
 		tmpStyle.WriteString("&::")
 		tmpStyle.WriteString(string(pseudoelement))
-		tmpStyle.WriteString(" {")
+		tmpStyle.WriteString("{")
 	}
 	tmpStyle.WriteString(style)
 	if hasPseudoelement {
@@ -156,7 +158,7 @@ func (b *Builder) createStyle(class, style string, modifiers ...Modifier) {
 		tmpStyle.WriteString("}")
 	}
 	if b.hasCustomSelector {
-		*b.styles = append(*b.styles, tmpStyle)
+		*b.globalStyles = append(*b.globalStyles, tmpStyle)
 	}
 	if !b.hasCustomSelector {
 		b.rememberStyle(tmpStyle)
@@ -175,8 +177,9 @@ func (b *Builder) rememberStyle(buf *bytes.Buffer) {
 	styleHash := hashBytes(styleBytes)
 	if _, ok := b.seenStyles[styleHash]; !ok {
 		b.seenStyles[styleHash] = struct{}{}
-		*b.styles = append(*b.styles, buf)
+		*b.globalStyles = append(*b.globalStyles, buf)
 	}
+	b.styles = append(b.styles, buf)
 }
 
 func (b *Builder) openCustomSelector(buf *bytes.Buffer) {
@@ -189,5 +192,5 @@ func (b *Builder) closeCustomSelector() {
 	b.customSelectorClose = true
 	tmpStyle := new(bytes.Buffer)
 	tmpStyle.WriteString("}")
-	*b.styles = append(*b.styles, tmpStyle)
+	*b.globalStyles = append(*b.globalStyles, tmpStyle)
 }

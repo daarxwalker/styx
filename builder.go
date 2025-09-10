@@ -19,19 +19,21 @@ type Builder struct {
 }
 
 var (
-	classReplaceSymbols = []string{
+	classReplacers = []string{
 		" ", `_`,
+		"%", ``,
+		",", `_`,
 	}
 )
 
 var (
-	classReplacer = strings.NewReplacer(classReplaceSymbols...)
+	classEscaper = strings.NewReplacer(classReplacers...)
 )
 
 var (
 	styleSelectorEscaper = strings.NewReplacer(
 		append(
-			classReplaceSymbols,
+			classReplacers,
 			".", `\.`,
 			"/", `\/`,
 		)...,
@@ -60,6 +62,11 @@ func (b *Builder) Join(other *Builder) *Builder {
 	for _, style := range other.styles {
 		b.rememberStyle(style)
 	}
+	return b
+}
+
+func (b *Builder) Raw(style string, modifiers ...Modifier) *Builder {
+	b.createStyle("", style, modifiers...)
 	return b
 }
 
@@ -96,7 +103,7 @@ func (b *Builder) createClass(class string, modifiers ...Modifier) {
 		tmpClass.WriteString(string(modifier))
 		tmpClass.WriteString(":")
 	}
-	tmpClass.WriteString(classReplacer.Replace(class))
+	tmpClass.WriteString(strings.ToLower(classEscaper.Replace(class)))
 	b.rememberClass(tmpClass.String())
 }
 
@@ -131,7 +138,7 @@ func (b *Builder) createStyle(class, style string, modifiers ...Modifier) {
 			tmpStyle.WriteString(string(modifier))
 			tmpStyle.WriteString(`\:`)
 		}
-		tmpStyle.WriteString(styleSelectorEscaper.Replace(class))
+		tmpStyle.WriteString(strings.ToLower(styleSelectorEscaper.Replace(class)))
 		tmpStyle.WriteString("{")
 	}
 	if hasPseudoselector {

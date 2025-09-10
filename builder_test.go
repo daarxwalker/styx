@@ -8,9 +8,40 @@ import (
 
 func TestBuilder(t *testing.T) {
 	t.Run(
+		"escaping", func(t *testing.T) {
+			styler := New()
+			testStyle := styler.Build().
+				W("100%").
+				Font("1rem Roboto,sans-serif")
+			assert.Equal(
+				t,
+				`w-100 font-1rem_roboto_sans-serif`,
+				testStyle.Class(),
+			)
+			assert.Equal(
+				t,
+				`.w-100{width:100%;}.font-1rem_roboto_sans-serif{font:1rem Roboto,sans-serif;}`,
+				testStyle.Style(),
+			)
+		},
+	)
+	t.Run(
+		"raw", func(t *testing.T) {
+			styler := New()
+			styler.Build(".test-raw").
+				Raw("width:100;height:100vh;background-color:red;").
+				Finish()
+			assert.Equal(
+				t,
+				`.test-raw{width:100;height:100vh;background-color:red;}`,
+				styler.String(),
+			)
+		},
+	)
+	t.Run(
 		"create styles", func(t *testing.T) {
-			css := New()
-			button := css.Build().
+			styler := New()
+			button := styler.Build().
 				InlineFlex(Lg).
 				BgColor(ColorSuccess400).
 				PX("1rem").PY("0.5rem")

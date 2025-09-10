@@ -1,7 +1,5 @@
 package styx
 
-type FontFace string
-
 func (b *Builder) Font(value string, modifiers ...Modifier) *Builder {
 	className := "font-" + value
 	b.createClass(className, modifiers...)
@@ -9,10 +7,10 @@ func (b *Builder) Font(value string, modifiers ...Modifier) *Builder {
 	return b
 }
 
-func (b *Builder) FontFamily(fontFamilyName string, modifiers ...Modifier) *Builder {
-	className := "font-" + fontFamilyName
+func (b *Builder) FontFamily(font Font, modifiers ...Modifier) *Builder {
+	className := "font-" + string(font)
 	b.createClass(className, modifiers...)
-	b.createStyle(className, "font-family:"+fontFamilyName+",sans-serif;", modifiers...)
+	b.createStyle(className, "font-family:var(--font-"+string(font)+");", modifiers...)
 	return b
 }
 

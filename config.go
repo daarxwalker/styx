@@ -2,15 +2,16 @@ package styx
 
 type Config struct {
 	FontSize    string
-	FontFamily  string
+	Font        Font
+	FontFaces   map[Font]FontFace
 	Colors      map[Color]string
 	Breakpoints map[Modifier]string
 	Shadows     map[Modifier]string
 }
 
 const (
-	BaseFontSize   = "16px"
-	BaseFontFamily = `ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`
+	BaseFontSize = "16px"
+	BaseFont     = Font(`ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'`)
 )
 
 var (
@@ -68,10 +69,11 @@ var (
 func CreateBaseConfig() *Config {
 	return &Config{
 		FontSize:    BaseFontSize,
-		FontFamily:  BaseFontFamily,
+		Font:        BaseFont,
 		Colors:      BaseColors,
 		Breakpoints: BaseBreakpoints,
 		Shadows:     BaseBoxShadows,
+		FontFaces:   make(map[Font]FontFace),
 	}
 }
 

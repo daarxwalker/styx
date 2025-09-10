@@ -92,3 +92,17 @@ func (b *Builder) ListStyle(value string, modifiers ...Modifier) *Builder {
 	b.createStyle(className, "list-style:"+value+";", modifiers...)
 	return b
 }
+
+func (b *Builder) Truncate(modifiers ...Modifier) *Builder {
+	className := "truncate"
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "text-overflow:ellipsis;white-space:nowrap;overflow:hidden;", modifiers...)
+	return b
+}
+
+func (b *Builder) Whitespace(value string, modifiers ...Modifier) *Builder {
+	className := "whitespace-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "white-space:"+value+"", modifiers...)
+	return b
+}

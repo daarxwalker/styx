@@ -111,6 +111,18 @@ func TestBuilder(t *testing.T) {
 		},
 	)
 	t.Run(
+		"example form field", func(t *testing.T) {
+			styler := New()
+			styler.Build().
+				Flex().FlexCol().Gap("1rem").MT("1rem")
+			assert.Equal(
+				t,
+				`.flex{display:flex;}.flex-col{flex-direction:column;}.gap-1rem{gap:1rem;}.mt-1rem{margin-top:1rem;}`,
+				styler.String(),
+			)
+		},
+	)
+	t.Run(
 		"example checkbox", func(t *testing.T) {
 			styler := New()
 			{

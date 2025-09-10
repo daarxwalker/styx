@@ -20,8 +20,7 @@ type Builder struct {
 
 var (
 	classReplaceSymbols = []string{
-		" ", `-`,
-		"/", `-`,
+		" ", `_`,
 	}
 )
 
@@ -34,6 +33,7 @@ var (
 		append(
 			classReplaceSymbols,
 			".", `\.`,
+			"/", `\/`,
 		)...,
 	)
 )

@@ -16,7 +16,7 @@ var (
 		Relative().
 		BgColor(ColorWhite).
 		PX("1rem").PY("0.5rem").
-		Border("1px").BorderColor(ColorNeutral).
+		Border("1px").BorderColor(ColorNeutral400).
 		Rounded("1rem").
 		Class()
 )  
@@ -112,8 +112,8 @@ var (
 var (
     someCSS := styler.Build().
             Width("100%", Lg).
-            BgColor(ColorNeutral).
-            BgColor(ColorNeutralHover, Hover)
+            BgColor(ColorNeutral400).
+            BgColor(ColorNeutral500, Hover)
 )
 
 ```

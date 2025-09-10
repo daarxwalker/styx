@@ -156,3 +156,12 @@ func (b *Builder) Z(value string, modifiers ...Modifier) *Builder {
 	b.createStyle(className, "z-index:"+value+";", modifiers...)
 	return b
 }
+
+// Other
+
+func (b *Builder) Aspect(value string, modifiers ...Modifier) *Builder {
+	className := "aspect-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "aspect-ratio:"+value+";", modifiers...)
+	return b
+}

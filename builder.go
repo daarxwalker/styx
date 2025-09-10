@@ -158,6 +158,7 @@ func (b *Builder) createStyle(class, style string, modifiers ...Modifier) {
 		tmpStyle.WriteString("}")
 	}
 	if b.hasCustomSelector {
+		b.styles = append(b.styles, tmpStyle)
 		*b.globalStyles = append(*b.globalStyles, tmpStyle)
 	}
 	if !b.hasCustomSelector {
@@ -192,5 +193,6 @@ func (b *Builder) closeCustomSelector() {
 	b.customSelectorClose = true
 	tmpStyle := new(bytes.Buffer)
 	tmpStyle.WriteString("}")
+	b.styles = append(b.styles, tmpStyle)
 	*b.globalStyles = append(*b.globalStyles, tmpStyle)
 }

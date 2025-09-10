@@ -1,8 +1,10 @@
 package styx
 
 import (
-	"fmt"
+	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestBaseStyles(t *testing.T) {
@@ -10,12 +12,16 @@ func TestBaseStyles(t *testing.T) {
 		"create base styles", func(t *testing.T) {
 			instance := New()
 			instance.CreateBaseStyles()
-			fmt.Println(instance.String())
-			// assert.Equal(
-			// 	t,
-			// 	`lg:inline-flex bg-success px-1rem py-0.5rem`,
-			// 	button.Class(),
-			// )
+			assert.Equal(
+				t,
+				true,
+				len(instance.String()) > 0,
+			)
+			assert.Equal(
+				t,
+				true,
+				strings.HasPrefix(instance.String(), ":root"),
+			)
 		},
 	)
 }

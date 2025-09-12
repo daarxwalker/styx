@@ -55,6 +55,15 @@ func (b *Builder) FlexWrapReverse(modifiers ...Modifier) *Builder {
 	return b
 }
 
+// Order
+
+func (b *Builder) Order(value string, modifiers ...Modifier) *Builder {
+	className := "order-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "order:"+value+";", modifiers...)
+	return b
+}
+
 // Gap
 
 func (b *Builder) Gap(value string, modifiers ...Modifier) *Builder {

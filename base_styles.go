@@ -5,6 +5,12 @@ import "fmt"
 func (s *Styx) CreateBaseStyles() {
 	{
 		root := s.Build(":root")
+		root.DefineVar("scale-x", "1.0")
+		root.DefineVar("scale-y", "1.0")
+		root.DefineVar("skew-x", "1.0")
+		root.DefineVar("skew-y", "1.0")
+		root.DefineVar("translate-x", "1.0")
+		root.DefineVar("translate-y", "1.0")
 		root.DefineVar("font-size", s.cfg.FontSize)
 		root.DefineVar("base-font", string(s.cfg.Font))
 		for k, v := range s.cfg.Colors {

@@ -5,10 +5,6 @@ import (
 	"strings"
 )
 
-func Var(name string) string {
-	return "var(--" + name + ")"
-}
-
 func hashBytes(data []byte) uint64 {
 	h := fnv.New64a()
 	_, err := h.Write(data)

@@ -157,6 +157,22 @@ func (b *Builder) Z(value string, modifiers ...Modifier) *Builder {
 	return b
 }
 
+// Object
+
+func (b *Builder) ObjectFit(value string, modifiers ...Modifier) *Builder {
+	className := "object-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "object-fit:"+value+";", modifiers...)
+	return b
+}
+
+func (b *Builder) ObjectPosition(value string, modifiers ...Modifier) *Builder {
+	className := "object-" + value
+	b.createClass(className, modifiers...)
+	b.createStyle(className, "object-position:"+value+";", modifiers...)
+	return b
+}
+
 // Other
 
 func (b *Builder) Aspect(value string, modifiers ...Modifier) *Builder {

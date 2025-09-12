@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<title>Test</title>
+		<style>
+			:root {
+				--scale-x: 1.0;
+				--scale-y: 1.0;
+			}
+			.scale-x-2 {
+				--scale-x: 2.0;
+				scale: var(--scale-x) var(--scale-y);
+			}
+			.scale-y-0\.5 {
+				--scale-y: 0.5;
+				scale: var(--scale-x) var(--scale-y);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="scale-x-2 scale-y-0.5" style="background: red; width: 100px; height: 100px;"></div>
+		<div style="background: blue; width: 100px; height: 100px;"></div>
+	</body>
+</html>

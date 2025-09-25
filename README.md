@@ -61,6 +61,7 @@ go get github.com/daarxwalker/styx
 - [Fragment](#fragment)
 - [Nested rule](#nested-rule)
 - [Global rule](#global-rule)
+- [Helpers](#helpers)
 - [Helpers chaining](#helpers-chaining)
 - [Result](#result)
 
@@ -191,31 +192,19 @@ func createGlobalStyles() {
 
 <br>
 
-### Helpers chaining
-Define selector with helpers.<br>
-> _Useful for special type-safe selectors._
-
-> Self, Child, NextSibling, Sibling, Class(), Id(), Attribute()
-```go
-var (
-	styler := styx.New()
-)
-
-func createStyles() {
-    styler.Rule(
-        styx.WithSelector(styx.Class("example")),
-        styx.WithRule(
-            styx.WithSelector(styx.Self, styx.Child, styx.Class('some-child')),
-        )
-    )
-}
-```
-
-<br>
-
 ### Helpers
-Sugared rules<br>
-> _Useful for defining @font-face._
+Sugared selectors, rules.<br>
+> _Useful for defining selectors or global rules like @font-face._ 
+
+| Helper         | CSS     | Description      |
+|----------------|---------|------------------|
+| `Self`         | `&`     | Current selector |
+| `Child`        | `>`     | Child            |
+| `NextSibling`  | `+`     | Next sibling     |
+| `Sibling`      | `~`     | Any sibling      |
+| `Class("btn")` | `.btn`  | CSS class        |
+| `Id("main")`   | `#main` | CSS id           |
+
 ```go
 var (
     styler := styx.New()
@@ -233,6 +222,28 @@ func createGlobalStyles() {
 		
     // ResetStyles()
     styler.ResetStyles()
+}
+```
+
+<br>
+
+### Helpers chaining
+Define selector with helpers.<br>
+> _Useful for special type-safe selectors._
+
+> Self, Child, NextSibling, Sibling, Class(), Id(), Attribute()
+```go
+var (
+	styler := styx.New()
+)
+
+func createStyles() {
+    styler.Rule(
+        styx.WithSelector(styx.Class("example")),
+        styx.WithRule(
+            styx.WithSelector(styx.Self, styx.Child, styx.Class('some-child')),
+        )
+    )
 }
 ```
 

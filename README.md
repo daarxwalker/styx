@@ -1,6 +1,6 @@
 
 # STYX
-> Type-safe, composable, utility-first CSS engine in Go
+> CSS in Go, no magic, no Node
 ```go  
 package app  
   
@@ -12,18 +12,21 @@ import (
 var styler = styx.New()  
   
 var (  
-	someStyle = styler.Build().
-		Relative().
-		BgColor(ColorWhite).
-		PX("1rem").PY("0.5rem").
-		Border("1px").BorderColor(ColorNeutral400).
-		Rounded("1rem").
-		Class()
+    someButtonClass = styler.Rule(
+	    styx.WithSelector(styx.Class("btn")),
+	    styx.WithProp(styx.Padding, styx.Rem(1)),
+	    styx.WithProp(styx.BackgroundColor, "blue"),
+	    styx.WithRule(
+		    styx.WithSelector(styx.Self+styx.Hover),
+		    styx.WithProp(styx.BackgroundColor, "red"),
+	    ),
+    )
 )  
   
-func SomeComponent(nodes ...Node) Node {  
-	return Div(
-		Class(someStyle)
+func SomeButtonComponent(nodes ...Node) Node {  
+	return Button(
+		Class(someButtonClass),
+		Type("button"),
 		Fragment(nodes...),
 	)
 }  
@@ -32,19 +35,12 @@ func SomeComponent(nodes ...Node) Node {
 
 <br>
 
-## Why Choose STYX?
-> If you love writing Go and don’t want to rely on npm packages just to build reliable, scalable styles.
-
-Styx brings proven utility-first principles — like those from TailwindCSS — into the Go ecosystem, but with a type-safe, composable, and idiomatic API. Design styles directly in Go, avoid runtime CSS pitfalls, and keep full control without leaving your language:
+## When to use
+> Use Styx if you want type-safe CSS in Go without depending on Node.js or if you’re building Go-first SSR apps, micro-frontends, or design systems.
 
 * **🔮🚫No magic:** What you write is exactly what you get; no hidden rules, no preprocessing, no side effects.
-* **🧱 Utility-first CSS generation:** Compose styles using chainable Go methods inspired by TailwindCSS.
 * **🧠 Type-safe API:** Build CSS utilities through strongly typed Go functions instead of raw strings.
-* **🧵 CSS deduplication & optimization:** Prevents duplicate class definitions and style blocks automatically.
-* **🎯 Composable styles:** Combine and reuse style sets (Join, Build, etc.) across components or packages.
-* **🎛 Custom selectors support:** Write scoped styles with custom selectors (.button, *, body > div, etc.).
-* **🎨 CSS variables & theming:** Define and use CSS custom properties (breakpoints,colors,fonts,shadows).
-* **📱 Responsive modifiers & pseudo-classes:** Add media queries and support for hover, focus, disabled, and more via modifiers.
+* **🎯 Composable styles:** Combine and reuse style sets (Join, Rule, Fragment) across components or packages.
 * **📦 Fully embeddable:** Integrate seamlessly in Go applications – ideal for web apps, SSR, or static generation tools.
 * **🧹 Browser reset & base styles:** Generate reset styles and global base styles programmatically.
 * **🪶 No external dependencies:** Pure Go implementation with zero runtime dependencies.
@@ -59,11 +55,13 @@ go get github.com/daarxwalker/styx
 
 ## Features
 - [Scope](#scope)
-- [Build](#build)
-- [Modifier](#modifier)
-- [Custom selector](#custom-selector)
-- [Define CSS variables](#define-css-variables)
 - [Join](#join)
+- [Rule](#rule)
+- [Prop](#prop)
+- [Fragment](#fragment)
+- [Nested rule](#nested-rule)
+- [Global rule](#global-rule)
+- [Helpers chaining](#helpers-chaining)
 - [Result](#result)
 
 <br>
@@ -72,90 +70,8 @@ go get github.com/daarxwalker/styx
 Create multiple Styx instances<br>
 > _Useful for different apps, modules, services, etc..._
 ```go
-instance01 := styx.New()
-instance02 := styx.New()
-```
-
-<br>
-
-### Build
-Begin write style with .Build() method.<br>
-> _Method accepts custom selector argument, which group all defined props to single style._
-```go
-var (
-	styler := styx.New()
-)
-
-var (
-	someCSS := styler.Build().
-				Relative().
-				PX("1rem", Lg).
-				TextCenter()
-)
-
-func main() {
-	someCSS.Class() // Use in GOX (HTML)
-	someCSS.Style() // Useful for tests
-}
-```
-
-<br>
-
-### Modifier
-All props have optional Modifier type arguments<br>
-> _Useful for breakpoints, pseudo-selectors, pseudo-elements, theming._
-```go
-var (
-	styler := styx.New()
-)
-
-var (
-    someCSS := styler.Build().
-            Width("100%", Lg).
-            BgColor(ColorNeutral400).
-            BgColor(ColorNeutral500, Hover)
-)
-
-```
-
-<br>
-
-### Custom selector
-Define custom selector in .Build(".custom-class") method.<br>
-> _It groups all defined props to single style._
-> _Finish, Style or Class method is required to close group._
-```go
-var (
-	styler := styx.New()
-)
-
-var (
-	styler.Build(".some-custom-class").
-		Relative().
-		P("1rem").
-		Finish()
-)
-
-func main() {
-	fmt.Printlin(styler.String()) // .some-custom-class{position:relative;padding:1rem;}
-}
-```
-
-<br>
-
-### Define CSS variables
-Join multiple Styx instances<br>
-> _Useful for UI libraries, base styles._
-```go
-var (
-	styler := styx.New()
-)
-
-var (
-	styler.Build(".some-custom-class").
-		DefineVar("name", "value").
-		Finish()
-)
+styler01 := styx.New()
+styler02 := styx.New()
 ```
 
 <br>
@@ -164,15 +80,167 @@ var (
 Join multiple Styx instances<br>
 > _Useful for UI libraries, base styles._
 ```go
-instance01 := styx.New()
-instance02 := styx.New()
-instance01.Join(instance02)
+styler01 := styx.New()
+styler02 := styx.New()
+styler01.Join(styler02)
 ```
+<br>
+
+### Rule
+Begin to write statement with .Rule() method.<br>
+> _Method accepts options pattern functions like WithSelector(), WithProp(), WithRule()._
+```go
+var (
+    styler := styx.New()
+)
+
+func createStyles() {
+    styler.Rule(
+      styx.WithSelector(styx.Class("example")),
+      styx.WithProp(styx.Background, "red"),
+    )
+}
+
+func main() {
+    fmt.Println(styler.String()) // .example{background:red;}
+}
+```
+
+<br>
+
+### Prop
+Define CSS prop<br>
+> _Method accepts prop name and variadic value._
+```go
+styx.WithProp(styx.Border, Px(1), OutlineSolid, "black")
+```
+
+<br>
+
+### Fragment
+Props can be grouped in flat way.<br>
+> _Useful for reusable props._
+```go
+var (
+    styler := styx.New()
+)
+
+func reusableStyles() styx.Node {
+    return styx.Fragment(
+        styx.WithProp(styx.Padding, styx.Rem(1)),
+    )
+}
+
+func createStyles() {
+    styler.Rule(
+        styx.WithSelector(styx.Class("example")),
+        styx.WithProp(styx.Background, "red"),
+        reusableStyles(),
+    )
+}
+
+```
+
+<br>
+
+### Nested rule
+Define nested rule, like child, pseudo-classes, pseudo-elements,at-rules.<br>
+> _Useful for :hover, :focus, @media, etc..._
+```go
+var (
+	styler := styx.New()
+)
+
+func createStyles() {
+    styler.Rule(
+        styx.WithSelector(styx.Class("example")),
+        styx.WithProp(styx.Background, "red"),
+        styx.WithRule(
+            styx.WithSelector(styx.Self+styx.Hover),
+            styx.WithProp(styx.Background, "blue"),
+        )
+        // Selector helpers chaining
+        styx.WithRule(
+            styx.WithSelector(styx.Self+styx.Hover),
+            styx.WithProp(styx.Border, "blue"),
+        )
+    )
+}
+```
+
+<br>
+
+### Global rule
+Create rules in global scope.<br>
+> _Define global rules, like :root, @font-face._
+```go
+var (
+    styler := styx.New()
+)
+
+func createGlobalStyles() {
+    styler.Global(
+        styx.WithRule(
+            styx.WithSelector(styx.Root),
+            styx.DefineVar(fontSize, "16px"),
+            styx.DefineVar(fontFamily, "Inter,sans-serif"),
+        )
+    )
+}
+```
+
+<br>
+
+### Helpers chaining
+Define selector with helpers.<br>
+> _Useful for special type-safe selectors._
+
+> Self, Child, NextSibling, Sibling, Class(), Id(), Attribute()
+```go
+var (
+	styler := styx.New()
+)
+
+func createStyles() {
+    styler.Rule(
+        styx.WithSelector(styx.Class("example")),
+        styx.WithRule(
+            styx.WithSelector(styx.Self, styx.Child, styx.Class('some-child')),
+        )
+    )
+}
+```
+
+<br>
+
+### Helpers
+Sugared rules<br>
+> _Useful for defining @font-face._
+```go
+var (
+    styler := styx.New()
+)
+
+func createGlobalStyles() {
+    // FontFace()
+    styler.FontFace(
+        "Inter",
+        "100 900",
+        "normal",
+        "/fonts/Inter-VariableFont_opsz,wght.ttf",
+        "truetype-variations",
+    )
+		
+    // ResetStyles()
+    styler.ResetStyles()
+}
+```
+
 <br>
 
 ### Result
 Retrieve the final styles in an idiomatic, Go-centric way.<br>
-> _Useful for writing styles directly to files, HTTP responses, or embedded assets._
+> _Styx generates CSS you write, no big runtimes, no processing._
 ```go
 stylesBytes := styler.Bytes() // Get CSS as []byte
 ```

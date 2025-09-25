@@ -5,80 +5,81 @@ import (
 	"fmt"
 	"io"
 
-	_ "github.com/goforj/godump"
+	"github.com/dchest/uniuri"
 )
 
 type Styx struct {
-	cfg        *Config
-	styles     []*bytes.Buffer
-	builders   []*Builder
-	seenStyles map[uint64]struct{}
+	nodes []*node
 }
 
-func New(cfg ...*Config) *Styx {
-	instance := &Styx{
-		cfg:        CreateBaseConfig(),
-		styles:     make([]*bytes.Buffer, 0),
-		seenStyles: make(map[uint64]struct{}),
+func New() *Styx {
+	return &Styx{
+		nodes: make([]*node, 0),
 	}
-	if len(cfg) > 0 {
-		instance.cfg.Merge(cfg[0])
-	}
-	return instance
 }
 
-func (s *Styx) Build(selector ...string) *Builder {
-	var customSelector string
-	if len(selector) > 0 {
-		customSelector = selector[0]
+func (s *Styx) Global(nodes ...Node) {
+	globalNode := &node{
+		nodeType: nodeTypeGlobal,
 	}
-	builder := &Builder{
-		cfg:               s.cfg,
-		customSelector:    customSelector,
-		hasCustomSelector: len(customSelector) > 0,
-		classes:           make([]string, 0),
-		globalStyles:      &s.styles,
-		styles:            make([]*bytes.Buffer, 0),
-		seenClasses:       make(map[string]struct{}),
-		seenStyles:        s.seenStyles,
+	for _, nd := range nodes {
+		nd(globalNode)
 	}
-	s.builders = append(s.builders, builder)
-	return builder
+	s.nodes = append(s.nodes, globalNode.nodes...)
 }
 
-func (s *Styx) Join(other *Styx) *Styx {
-	s.cfg.Merge(other.cfg)
-	for _, style := range other.styles {
-		styleBytes := style.Bytes()
-		hash := hashBytes(styleBytes)
-		if _, ok := s.seenStyles[hash]; !ok {
-			s.seenStyles[hash] = struct{}{}
-			s.styles = append(s.styles, style)
+func (s *Styx) Rule(nodes ...Node) string {
+	ruleNode := &node{
+		nodeType: nodeTypeRule,
+	}
+	for _, nd := range nodes {
+		nd(ruleNode)
+	}
+	var selector string
+	for _, nd := range ruleNode.nodes {
+		if nd.nodeType == nodeTypeSelector {
+			selector = nd.key
+			break
 		}
 	}
-	return s
+	if len(selector) == 0 {
+		selector = "." + uniuri.New()
+		ruleNode.nodes = append(
+			ruleNode.nodes, &node{
+				nodeType: nodeTypeSelector,
+				key:      selector,
+			},
+		)
+	}
+	sortNodes(ruleNode)
+	s.nodes = append(s.nodes, ruleNode)
+	return stripSelectorPrefix(selector)
 }
 
-func (s *Styx) Bytes() []byte {
-	return s.createResult().Bytes()
-}
-
-func (s *Styx) String() string {
-	return s.createResult().String()
-}
-
-func (s *Styx) Write(writer io.Writer) error {
-	_, err := writer.Write(s.Bytes())
+func (s *Styx) Write(w io.Writer) error {
+	_, err := w.Write(s.Bytes())
 	if err != nil {
-		return fmt.Errorf("failed to write styx styles: %w", err)
+		return fmt.Errorf("failed to write styles: %w", err)
 	}
 	return nil
 }
 
-func (s *Styx) createResult() *bytes.Buffer {
-	result := new(bytes.Buffer)
-	for _, style := range s.styles {
-		result.Write(style.Bytes())
+func (s *Styx) Join(other *Styx) {
+	s.nodes = append(s.nodes, other.nodes...)
+}
+
+func (s *Styx) Bytes() []byte {
+	return s.build().Bytes()
+}
+
+func (s *Styx) String() string {
+	return s.build().String()
+}
+
+func (s *Styx) build() *bytes.Buffer {
+	b := new(bytes.Buffer)
+	for _, n := range s.nodes {
+		build(b, n.nodes)
 	}
-	return result
+	return b
 }

@@ -1,63 +1,66 @@
 package styx
 
-func (s *Styx) ResetBrowserStyles() {
-	{
-		s.Build("*,::before,::after").
-			M("0").
-			P("0").
-			BoxBorder().
-			Finish()
-	}
-	{
-		s.Build("html,body").
-			H("100%").
-			LineHeight("1.5").
-			FontFamily("system-ui").
-			Antialiased().
-			Finish()
-	}
-	{
-		s.Build("body,h1,h2,h3,h4,p,figure,blockquote,dl,dd").
-			M("0").
-			Finish()
-	}
-	{
-		s.Build("ul,ol").
-			ListStyle("none").
-			M("0").
-			P("0").
-			Finish()
-	}
-	{
-		s.Build("a").
-			NoUnderline().
-			TextColor(ColorInherit).
-			Finish()
-	}
-	{
-		s.Build("img,video,svg,canvas").
-			Block().
-			MaxW("100%").
-			Finish()
-	}
-	{
-		s.Build("button,input,select,textarea").
-			Font("inherit").
-			TextColor(ColorInherit).
-			Border("none").
-			M("0").
-			P("0").
-			Finish()
-	}
-	{
-		s.Build("button").
-			Cursor("pointer").
-			Finish()
-	}
-	{
-		s.Build("table").
-			BorderCollapse().
-			BorderSpacing("0").
-			Finish()
-	}
+func (s *Styx) ResetStyles() {
+	s.Rule(
+		WithSelector("*,::before,::after"),
+		WithProp(Margin, Zero),
+		WithProp(Padding, Zero),
+		WithProp(BoxSizing, "border-box"),
+	)
+	s.Rule(
+		WithSelector("html,body"),
+		WithProp(Height, Full),
+		WithProp(LineHeight, "1.5"),
+		WithProp(
+			FontFamily,
+			`ui-sans-serif,system-ui,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji'`,
+		),
+	)
+	s.Rule(
+		WithSelector("body,h1,h2,h3,h4,p,figure,blockquote,dl,dd"),
+		WithProp(Margin, "0"),
+	)
+	s.Rule(
+		WithSelector("ul,ol"),
+		WithProp(ListStyle, None),
+		WithProp(Margin, Zero),
+		WithProp(Padding, Zero),
+	)
+	s.Rule(
+		WithSelector("a"),
+		WithProp(TextDecoration, None),
+		WithProp(Color, Inherit),
+	)
+	s.Rule(
+		WithSelector("img,video,svg,canvas"),
+		WithProp(Display, "block"),
+		WithProp(MaxWidth, Full),
+	)
+	s.Rule(
+		WithSelector("button,input,select,textarea"),
+		WithProp(Font, Inherit),
+		WithProp(Color, Inherit),
+		WithProp(Border, None),
+		WithProp(Margin, Zero),
+		WithProp(Padding, Zero),
+	)
+	s.Rule(
+		WithSelector("button"),
+		WithProp(MinWidth, MaxContent),
+		WithProp(BackgroundColor, "transparent"),
+		WithProp(WhiteSpace, "nowrap"),
+		WithProp(Cursor, "pointer"),
+	)
+	s.Rule(
+		WithSelector("table"),
+		WithProp(TableLayout, Auto),
+		WithProp(TextIndent, Zero),
+		WithProp(BorderColor, Inherit),
+		WithProp(BorderCollapse, "collapse"),
+		WithProp(BorderSpacing, Zero),
+	)
+	s.Rule(
+		WithSelector("textarea"),
+		WithProp(Resize, "vertical"),
+	)
 }

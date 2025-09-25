@@ -1,21 +1,37 @@
 package styx
 
 import (
-	"strconv"
+	"strings"
 )
 
-func Rem(value int) string {
-	return strconv.Itoa(value) + "rem"
+func DefineVar(name, value string) Node {
+	return WithProp("--"+name, value)
 }
 
-func Px(value int) string {
-	return strconv.Itoa(value) + "px"
+func Comma(values ...string) string {
+	return strings.Join(values, ", ")
 }
 
-func Percent(value int) string {
-	return strconv.Itoa(value) + "%"
+func Important(values ...string) []string {
+	return append(values, "!important")
 }
 
-func Var(name string) string {
-	return "var(--" + name + ")"
+func OklabOpacity(color string, opacity float64) string {
+	return ColorMix("in oklab", color+" "+Percent(opacity), "transparent")
+}
+
+func Webkit(prop string, values ...string) Node {
+	return WithProp("-webkit-"+prop, values...)
+}
+
+func Moz(prop string, values ...string) Node {
+	return WithProp("-moz-"+prop, values...)
+}
+
+func Ms(prop string, values ...string) Node {
+	return WithProp("-ms-"+prop, values...)
+}
+
+func O(prop string, values ...string) Node {
+	return WithProp("-o-"+prop, values...)
 }

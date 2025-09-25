@@ -3,7 +3,7 @@ module github.com/daarxwalker/styx
 go 1.25
 
 require (
-	github.com/goforj/godump v1.6.0
+	github.com/dchest/uniuri v1.2.0
 	github.com/stretchr/testify v1.11.1
 )
 

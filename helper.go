@@ -12,6 +12,10 @@ func Comma(values ...string) string {
 	return strings.Join(values, ", ")
 }
 
+func Negate(value string) string {
+	return Minus + value
+}
+
 func Important(values ...string) []string {
 	return append(values, "!important")
 }

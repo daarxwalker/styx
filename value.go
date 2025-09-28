@@ -10,6 +10,7 @@ const (
 	Full       = "100%"
 	Auto       = "auto"
 	Zero       = "0"
+	Minus      = "-"
 	None       = "none"
 	Current    = "currentColor"
 	MaxContent = "max-content"

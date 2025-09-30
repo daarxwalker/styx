@@ -24,18 +24,18 @@ func OklabOpacity(color string, opacity float64) string {
 	return ColorMix("in oklab", color+" "+Percent(opacity), "transparent")
 }
 
-func Webkit(prop string, values ...string) Node {
-	return WithProp("-webkit-"+prop, values...)
+func Webkit(prop string) string {
+	return "-webkit-" + prop
 }
 
-func Moz(prop string, values ...string) Node {
-	return WithProp("-moz-"+prop, values...)
+func Moz(prop string) string {
+	return "-moz-" + prop
 }
 
-func Ms(prop string, values ...string) Node {
-	return WithProp("-ms-"+prop, values...)
+func Ms(prop string) string {
+	return "-ms-" + prop
 }
 
-func O(prop string, values ...string) Node {
-	return WithProp("-o-"+prop, values...)
+func O(prop string) string {
+	return "-o-" + prop
 }

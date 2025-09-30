@@ -20,6 +20,11 @@ const (
 )
 
 const (
+	AutoFit  = "auto-fit"
+	AutoFill = "auto-fill"
+)
+
+const (
 	WeightThin       = "100"
 	WeightExtraLight = "200"
 	WeightLight      = "300"
@@ -216,4 +221,16 @@ func OKLCH(lightness, chroma float64, hue float64, alpha ...float64) string {
 		return fmt.Sprintf("oklch(%.2f%% %.3f %.1f / %.2f)", lightness, chroma, hue, alpha[0])
 	}
 	return fmt.Sprintf("oklch(%.2f%% %.3f %.1f)", lightness, chroma, hue)
+}
+
+func Minmax(from, to string) string {
+	return fmt.Sprintf("minmax(%s,%s)", from, to)
+}
+
+func FitContent(value string) string {
+	return fmt.Sprintf("fit-content(%s)", value)
+}
+
+func Repeat(count string, values ...string) string {
+	return fmt.Sprintf("repeat(%s,%s)", count, strings.Join(values, " "))
 }

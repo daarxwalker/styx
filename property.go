@@ -188,6 +188,7 @@ const (
 	Float                      = "float"
 	FloodColor                 = "flood-color"
 	FloodOpacity               = "flood-opacity"
+	FontDisplay                = "font-display"
 	FontFamily                 = "font-family"
 	FontFeatureSettings        = "font-feature-settings"
 	FontKerning                = "font-kerning"

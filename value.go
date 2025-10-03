@@ -66,7 +66,7 @@ func TranslateZ(value string) string {
 }
 
 func Translate3D(x, y, z string) string {
-	return "translateZ(" + x + ", " + y + ", " + z + ")"
+	return "translate3D(" + x + ", " + y + ", " + z + ")"
 }
 
 func Scale(v string) string {
